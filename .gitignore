@@ -1,3 +1,10 @@
-server.crt
-server.key
-go.sum
+#Javacsript stuffs
+*node_modules
+client\package-lock.json
+
+#Go stuffs
+*.sum
+
+#Do not check secrets into git
+*.crt
+*.key
