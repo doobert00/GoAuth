@@ -12,12 +12,23 @@ const App = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can perform further validation or submit the data here
-    console.log('Username:', username);
-    console.log('Password:', password);
-    // Reset the form after submission
+    const creds = await fetch("https://localhost:443/auth", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        "user": username,
+        "pass": password,
+      },
+    })
+    if (!creds) {
+      console.log("bad")
+    }else {
+      console.log(creds)
+    }
     setUsername('');
     setPassword('');
   };
