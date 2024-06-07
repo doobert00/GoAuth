@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/md5"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -127,7 +126,9 @@ func postSignOut(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, "OK")
 }
 
-// TODO: Write encryption
+// TODO: Encryption is just a hash right now... we're never decrypting so encryption
+//
+//	really just amounts to using a consistent hash value.
 func encrypt(message string) string {
 	//Convert to byte array from string
 	messageBytes := []byte(message)
@@ -139,8 +140,6 @@ func encrypt(message string) string {
 
 func find_user(user string, pass string) bool {
 	return_val := true
-	log.Print(user)
-	log.Print(pass)
 	//Connect
 	clientOptions := options.Client().ApplyURI(MONGO_URI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
@@ -153,7 +152,6 @@ func find_user(user string, pass string) bool {
 		log.Print(err)
 		return_val = false
 	}
-	fmt.Println("Connected to MongoDB!")
 
 	//Find record
 	collection := client.Database(DATABASE).Collection(CRED_COLL)
@@ -171,7 +169,6 @@ func find_user(user string, pass string) bool {
 		log.Print(err)
 		return_val = false
 	}
-	fmt.Println("Connection to MongoDB closed.")
 
 	return return_val
 }
@@ -190,7 +187,6 @@ func add_user(user string, pass string) bool {
 		log.Print(err)
 		return_val = false
 	}
-	fmt.Println("Connected to MongoDB!")
 
 	//Create and insert a record
 	collection := client.Database(DATABASE).Collection(CRED_COLL)
@@ -208,7 +204,6 @@ func add_user(user string, pass string) bool {
 		log.Print(err)
 		return_val = false
 	}
-	fmt.Println("Connection to MongoDB closed.")
 
 	return return_val
 }
@@ -225,7 +220,6 @@ func add_token(user string) string {
 	if err != nil {
 		log.Print(err)
 	}
-	fmt.Println("Connected to MongoDB!")
 
 	collection := client.Database(DATABASE).Collection(TOKEN_COLL)
 	filter := token_record{User: user}
@@ -250,7 +244,6 @@ func add_token(user string) string {
 	if err != nil {
 		log.Print(err)
 	}
-	fmt.Println("Connection to MongoDB closed.")
 
 	return return_val
 }
@@ -265,7 +258,6 @@ func revoke_token(user string, token string) {
 	if err != nil {
 		log.Print(err)
 	}
-	fmt.Println("Connected to MongoDB!")
 
 	collection := client.Database(DATABASE).Collection(TOKEN_COLL)
 	filter := token_record{User: user, Token: token}
@@ -280,7 +272,6 @@ func revoke_token(user string, token string) {
 	if err != nil {
 		log.Print(err)
 	}
-	fmt.Println("Connection to MongoDB closed.")
 }
 
 func GenerateToken(user string) string {
