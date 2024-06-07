@@ -64,7 +64,7 @@ func postSignUp(c *gin.Context) {
 	match_user := r.MatchString(user)
 	match_pass := r.MatchString(pass)
 	if !match_user || !match_pass {
-		c.IndentedJSON(http.StatusBadRequest, "Username or Password contains restricted characters or is too long")
+		c.IndentedJSON(http.StatusBadRequest, "Username or Password does not match regex: "+PW_REGEX)
 		return
 	}
 	encrypt_user := encrypt(user)
@@ -91,7 +91,7 @@ func postAuth(c *gin.Context) {
 	match_user := r.MatchString(user)
 	match_pass := r.MatchString(pass)
 	if !match_user || !match_pass {
-		c.IndentedJSON(http.StatusBadRequest, "Username or Password contains restricted characters or is too long")
+		c.IndentedJSON(http.StatusBadRequest, "Username or Password does not match regex: "+PW_REGEX)
 		return
 	}
 
